@@ -2,30 +2,22 @@ import * as React from "react";
 
 export class Chat extends React.Component {
     render() {
-        const fullStyle = {
-            width: '100%',
-            height: 'calc(100vh - 18px)',
-            border: '1px solid black',
-            display: 'flex',
-            flexDirection: 'column' as 'column'
-        };
-        const mainStyle = {
-            flex: 1
-        };
         const footerStyle = {
             height: '2em',
             padding: '3px',
-            display: 'flex'
         };
-        const inputStyle = {
-            flex: 1,
-        }
 
-        return <div style={fullStyle}>
-            <main style={mainStyle}>
+        const messages: Array<ChatMessageProps> = [{user: 'Chris', message: 'Hello there'}, {user: 'Chris', message: 'Hello there'}, {user: 'Chris', message: 'Hello there'}];
+        const chatMessages = messages.map(message => {
+            return <ChatMessage user={message.user} message={message.message} />
+        });
+
+        return <div className="full-screen column-layout">
+            <main className="column-layout stretch">
+                {chatMessages}
             </main>
-            <footer style={footerStyle}>
-                <input style={inputStyle}/>
+            <footer style={footerStyle} className="row-layout">
+                <input className="stretch"/>
                 <button>Send</button>
             </footer>
         </div>;
