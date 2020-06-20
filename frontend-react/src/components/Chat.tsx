@@ -4,7 +4,14 @@ import io from "socket.io-client"
 
 interface ChatState {
     messages: Array<ChatMessageProps>,
+    userId: string,
     inputValue: string
+}
+
+interface ChatMessageForServer {
+    fromId: string,     // Id of the user who sent the message
+    userName: string    // UserName of the user who sent the message (= display name)
+    message: string     // The message itself
 }
 
 export class Chat extends React.Component<{}, ChatState> {
@@ -14,21 +21,31 @@ export class Chat extends React.Component<{}, ChatState> {
         super(props);
         this.state = {
             messages: [],
+            userId: null,
             inputValue: ''
-        }
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSendMessageToServer = this.handleSendMessageToServer.bind(this);
 
         this.socket = io('http://localhost:3000');
-        this.socket.on('new-user-id', (data: string) => {
-            console.log('userid: ' + data);
-        });
-        this.socket.on("new-chat-message", (data: ChatMessageProps) => {
+        this.socket.on('new-user-id', (newUserId: string) => {
             this.setState(prevState => {
                 return {
                     ...prevState,
-                    messages: [...prevState.messages, data]
+                    userId: newUserId
+                }
+            })
+        });
+        this.socket.on("new-chat-message", (newChatMessage: ChatMessageForServer) => {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    messages: [...prevState.messages, {
+                        ourMessage: this.state.userId === newChatMessage.fromId,
+                        userName: newChatMessage.userName,
+                        message: newChatMessage.message
+                    }]
                 };
             })
         });
@@ -46,9 +63,8 @@ export class Chat extends React.Component<{}, ChatState> {
 
     handleSendMessageToServer() {
         this.socket.emit('new-chat-message-to-server', {
-            user: 'Chris',
+            userName: 'Chris',
             message: this.state.inputValue,
-            ourMessage: true
         });
         this.setState(prevState => {
             return {
@@ -65,7 +81,7 @@ export class Chat extends React.Component<{}, ChatState> {
         };
 
         const chatMessages = this.state.messages.map(message => {
-            return <ChatMessage user={message.user} message={message.message} ourMessage={message.ourMessage}/>
+            return <ChatMessage userName={message.userName} message={message.message} ourMessage={message.ourMessage}/>
         });
 
         return <div className="full-screen column-layout">

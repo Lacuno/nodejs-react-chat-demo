@@ -2,7 +2,7 @@ import * as React from "react";
 
 export interface ChatMessageProps {
     message: string,
-    user: string,
+    userName: string,
     ourMessage: boolean
 }
 
@@ -16,7 +16,7 @@ export function ChatMessage(props: ChatMessageProps) {
 
 
     return <div className={bubbleClass}>
-        <div>{props.user}</div>
+        <div>{props.userName}</div>
         <div>{props.message}</div>
     </div>;
 }

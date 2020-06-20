@@ -19,11 +19,17 @@ function generateUserId() {
     return uuidv4();
 }
 
+/**
+ * Handles new chat messages from a user.
+ * We broadcast the message to all users (also the original user itself!)
+ * @param socket socket.io socket connection to a user
+ * @param userId id of the user who sent the message
+ */
 function newChatMessageHandler(socket, userId) {
     socket.on('new-chat-message-to-server', data => {
         io.emit('new-chat-message', {
             ...data,
-            from: userId,
+            fromId: userId,
         });
     });
 }
