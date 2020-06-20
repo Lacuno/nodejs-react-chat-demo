@@ -1,14 +1,38 @@
-import React from "react";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
+import React, {useState} from "react";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Chat} from "./Chat";
 import {Preferences} from "./Preferences";
 
+export interface Configuration {
+    username: string,
+    interfaceColor: InterfaceColorOption,
+    clockDisplay: ClockDisplayOption,
+    sendMessagesOnCtrlEnter: boolean
+    language: SupportedLanguage
+}
+
+export enum InterfaceColorOption {
+    light,
+    dark
+}
+
+export enum ClockDisplayOption {
+    clock12h,
+    clock24h
+}
+
+export enum SupportedLanguage {
+    ENGLISH,
+    GERMAN
+}
+
 export default function App() {
+    const [username, setUsername] = useState('test');
+    const [interfaceColor, setInterfaceColor] = useState(InterfaceColorOption.light);
+    const [clockDisplay, setClockDisplay] = useState(ClockDisplayOption.clock12h);
+    const [sendMessageOnCtrlEnter, setSendMessageOnCtrlEnter] = useState(true)
+    const [language, setLanguage] = useState(SupportedLanguage.ENGLISH);
+
     return (
         <Router>
             <div>
@@ -25,10 +49,21 @@ export default function App() {
 
                 <Switch>
                     <Route path="/preferences">
-                        <Preferences />
+                        <Preferences
+                            username={username}
+                            onUsernameChange={setUsername}
+                            interfaceColor={interfaceColor}
+                            onInterfaceColorChange={setInterfaceColor}
+                            clockDisplay={clockDisplay}
+                            onClockDisplayChange={setClockDisplay}
+                            sendMessagesOnCtrlEnter={sendMessageOnCtrlEnter}
+                            onSendMessagesOnCtrlEnterChange={setSendMessageOnCtrlEnter}
+                            language={language}
+                            onLanguageChange={setLanguage}
+                        />
                     </Route>
                     <Route path="/">
-                        <Chat />
+                        <Chat/>
                     </Route>
                 </Switch>
             </div>
