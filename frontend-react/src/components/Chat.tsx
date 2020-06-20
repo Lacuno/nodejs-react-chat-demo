@@ -8,21 +8,23 @@ interface ChatState {
 }
 
 export class Chat extends React.Component<{}, ChatState> {
+    private socket: SocketIOClient.Socket;
+
     constructor(props: any) {
         super(props);
         this.state = {
-            messages: [
-                {user: 'Chris', message: 'Hello there', ourMessage: true},
-                {user: 'Alex', message: 'Hello there', ourMessage: false},
-                {user: 'Chris', message: 'Hello there', ourMessage: true}
-            ],
+            messages: [],
             inputValue: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSendMessageToServer = this.handleSendMessageToServer.bind(this);
 
-        const socket = io('http://localhost:3000');
-        socket.on("new-chat-message", (data: ChatMessageProps) => {
+        this.socket = io('http://localhost:3000');
+        this.socket.on('new-user-id', (data: string) => {
+            console.log('userid: ' + data);
+        });
+        this.socket.on("new-chat-message", (data: ChatMessageProps) => {
             this.setState(prevState => {
                 return {
                     ...prevState,
@@ -38,6 +40,20 @@ export class Chat extends React.Component<{}, ChatState> {
             return {
                 ...prevState,
                 inputValue: value
+            }
+        })
+    }
+
+    handleSendMessageToServer() {
+        this.socket.emit('new-chat-message-to-server', {
+            user: 'Chris',
+            message: this.state.inputValue,
+            ourMessage: true
+        });
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                inputValue: ''
             }
         })
     }
@@ -58,16 +74,7 @@ export class Chat extends React.Component<{}, ChatState> {
             </main>
             <footer style={footerStyle} className="row-layout">
                 <input className="stretch" value={this.state.inputValue} onChange={this.handleChange}/>
-                <button onClick={() => this.setState(
-                    previousState => ({
-                        messages: [...previousState.messages, {
-                            user: 'Chris',
-                            message: this.state.inputValue,
-                            ourMessage: true
-                        }]
-                    })
-                )}>Send
-                </button>
+                <button onClick={this.handleSendMessageToServer}>Send</button>
             </footer>
         </div>;
     }
