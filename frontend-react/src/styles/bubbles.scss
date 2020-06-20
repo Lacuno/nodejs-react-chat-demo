@@ -5,6 +5,7 @@
   padding: 1em;
   border-radius: 1em;
   position: relative;
+  box-shadow: 2px 2px 4px 0 $shadowColor;
 
   &.right-bubble {
     margin-left: auto;

@@ -8,15 +8,18 @@ export interface ChatMessageProps {
 
 export function ChatMessage(props: ChatMessageProps) {
     let bubbleClass = 'bubble';
+    let userNameTag;
     if (props.ourMessage) {
-        bubbleClass += ' left-bubble';
-    } else {
         bubbleClass += ' right-bubble';
+    } else {
+        bubbleClass += ' left-bubble';
+        userNameTag = <div>{props.userName}</div>;
     }
 
 
+
     return <div className={bubbleClass}>
-        <div>{props.userName}</div>
+        {userNameTag}
         <div>{props.message}</div>
     </div>;
 }
