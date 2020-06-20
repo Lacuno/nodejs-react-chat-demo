@@ -80,7 +80,8 @@ export class App extends React.Component<{}, AppState> {
                     messages: [...this.state.chatState.messages, {
                         ourMessage: this.state.chatState.userId === newChatMessage.fromId,
                         userName: newChatMessage.userName,
-                        message: newChatMessage.message
+                        message: newChatMessage.message,
+                        darkMode: this.state.configuration.interfaceColor === InterfaceColorOption.dark
                     }]
                 }
             })
@@ -181,6 +182,7 @@ export class App extends React.Component<{}, AppState> {
                         </Route>
                         <Route path="/">
                             <Chat {...this.state.chatState}
+                                  {...this.state.configuration}
                                   onMessageSent={this.handleSendMessageToServer}/>
                         </Route>
                     </Switch>

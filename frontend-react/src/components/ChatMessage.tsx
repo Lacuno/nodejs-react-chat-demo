@@ -4,6 +4,7 @@ export interface ChatMessageProps {
     message: string,
     userName: string,
     ourMessage: boolean
+    darkMode: boolean
 }
 
 export function ChatMessage(props: ChatMessageProps) {
@@ -14,6 +15,11 @@ export function ChatMessage(props: ChatMessageProps) {
     } else {
         bubbleClass += ' left-bubble';
         userNameTag = <div>{props.userName}</div>;
+    }
+
+    console.log('dark_mode: ' + props.darkMode)
+    if(props.darkMode) {
+        bubbleClass += ' darkmode'
     }
 
     return <div className={bubbleClass}>

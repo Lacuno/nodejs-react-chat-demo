@@ -8,6 +8,13 @@
   position: relative;
   box-shadow: 2px 2px 4px 0 $shadowColor;
 
+  &.darkmode {
+    background-color: $darkPrimaryColor;
+    border: 1px solid $darkBorderColor;
+    box-shadow: 2px 2px 4px 0 $darkShadowColor;
+    color: white;
+  }
+
   &.right-bubble {
     margin-left: auto;
 
@@ -19,6 +26,8 @@
       top: -1px;
       border: 1em solid;
       border-color: $borderColor transparent transparent transparent;
+
+
     }
 
     &:after {
@@ -28,6 +37,15 @@
       top: 0;
       border: 1em solid;
       border-color: $primaryColor transparent transparent transparent;
+    }
+
+    &.darkmode {
+      &:before {
+          border-color: $darkBorderColor transparent transparent transparent;
+      }
+      &:after {
+        border-color: $darkPrimaryColor transparent transparent transparent;
+      }
     }
   }
 
@@ -51,6 +69,15 @@
       top: 0;
       border: 1em solid;
       border-color: $primaryColor transparent transparent transparent;
+    }
+
+    &.darkmode {
+      &:before {
+        border-color: $darkBorderColor transparent transparent transparent;
+      }
+      &:after {
+        border-color: $darkPrimaryColor transparent transparent transparent;
+      }
     }
   }
 }

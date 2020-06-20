@@ -1,8 +1,8 @@
 import * as React from "react";
 import {ChatMessage} from "./ChatMessage";
-import {ChatState} from "./App";
+import {ChatState, Configuration, InterfaceColorOption} from "./App";
 
-export interface ChatUiProps extends ChatState {
+export interface ChatUiProps extends ChatState, Configuration {
     onMessageSent: (message: string) => void
 }
 
@@ -51,7 +51,8 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
         };
 
         const chatMessages = this.props.messages.map(message => {
-            return <ChatMessage userName={message.userName} message={message.message} ourMessage={message.ourMessage}/>
+            return <ChatMessage userName={message.userName} message={message.message} ourMessage={message.ourMessage}
+            darkMode={this.props.interfaceColor === InterfaceColorOption.dark}/>
         });
 
         return <div className="full-screen column-layout">
