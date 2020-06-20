@@ -1,21 +1,46 @@
 import * as React from "react";
 import {ChatMessage, ChatMessageProps} from "./ChatMessage";
+import io from "socket.io-client"
 
 interface ChatState {
-    messages: Array<ChatMessageProps>
+    messages: Array<ChatMessageProps>,
+    inputValue: string
 }
 
 export class Chat extends React.Component<{}, ChatState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            messages: [{user: 'Chris', message: 'Hello there'}, {user: 'Chris', message: 'Hello there'}, {
-                user: 'Chris',
-                message: 'Hello there'
-            }]
+            messages: [
+                {user: 'Chris', message: 'Hello there', ourMessage: true},
+                {user: 'Alex', message: 'Hello there', ourMessage: false},
+                {user: 'Chris', message: 'Hello there', ourMessage: true}
+            ],
+            inputValue: ''
         }
+
+        this.handleChange = this.handleChange.bind(this);
+
+        const socket = io('http://localhost:3000');
+        socket.on("new-chat-message", (data: ChatMessageProps) => {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    messages: [...prevState.messages, data]
+                };
+            })
+        });
     }
 
+    handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const value = event.target.value;
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                inputValue: value
+            }
+        })
+    }
 
     render() {
         const footerStyle = {
@@ -24,7 +49,7 @@ export class Chat extends React.Component<{}, ChatState> {
         };
 
         const chatMessages = this.state.messages.map(message => {
-            return <ChatMessage user={message.user} message={message.message}/>
+            return <ChatMessage user={message.user} message={message.message} ourMessage={message.ourMessage}/>
         });
 
         return <div className="full-screen column-layout">
@@ -32,10 +57,14 @@ export class Chat extends React.Component<{}, ChatState> {
                 {chatMessages}
             </main>
             <footer style={footerStyle} className="row-layout">
-                <input className="stretch"/>
+                <input className="stretch" value={this.state.inputValue} onChange={this.handleChange}/>
                 <button onClick={() => this.setState(
                     previousState => ({
-                        messages: [...previousState.messages, {user: 'Chris', message: 'Hello there'}]
+                        messages: [...previousState.messages, {
+                            user: 'Chris',
+                            message: this.state.inputValue,
+                            ourMessage: true
+                        }]
                     })
                 )}>Send
                 </button>

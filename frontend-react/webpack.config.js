@@ -10,7 +10,7 @@ module.exports = {
         app: [path.join(__dirname, 'src', 'index.tsx'), path.join(__dirname, 'src', 'index.scss')]
     },
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, '..', 'backend-node', 'dist'),
         filename: '[name].[hash:8].js'
     },
     resolve: {

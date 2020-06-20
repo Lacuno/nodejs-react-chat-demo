@@ -1,12 +1,15 @@
 .bubble {
   background-color: $primaryColor;
   border: 1px solid $borderColor;
-  margin: 1em auto 1em 1em;
+  margin: 1em;
   padding: 1em;
   border-radius: 1em;
   position: relative;
 
-  &.rightbubblearrow {
+  &.right-bubble {
+    margin-left: auto;
+
+    // Add the arrow of the bubble with before and after - right arrow
     &:before {
       content: ' ';
       position: absolute;
@@ -15,6 +18,7 @@
       border: 1em solid;
       border-color: $borderColor transparent transparent transparent;
     }
+
     &:after {
       content: ' ';
       position: absolute;
@@ -24,7 +28,11 @@
       border-color: $primaryColor transparent transparent transparent;
     }
   }
-  &.leftbubblearrow {
+
+  &.left-bubble {
+    margin-right: auto;
+
+    // Add the arrow of the bubble with before and after - left arrow
     &:before {
       content: ' ';
       position: absolute;
@@ -33,6 +41,7 @@
       border: 1em solid;
       border-color: $borderColor transparent transparent transparent;
     }
+
     &:after {
       content: ' ';
       position: absolute;
