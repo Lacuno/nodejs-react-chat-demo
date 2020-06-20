@@ -65,6 +65,9 @@ export class Chat extends React.Component<{}, ChatState> {
     }
 
     handleSendMessageToServer() {
+        if(!this.state.inputValue) {
+            return;
+        }
         this.socket.emit('new-chat-message-to-server', {
             userName: this.state.userName,
             message: this.state.inputValue,
