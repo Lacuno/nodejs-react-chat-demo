@@ -1,7 +1,15 @@
-import React, {useState} from "react";
+import React from "react";
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Chat} from "./Chat";
 import {Preferences} from "./Preferences";
+import {ChatMessageProps} from "./ChatMessage";
+import io from "socket.io-client";
+
+export interface ChatMessageForServer {
+    fromId: string,     // Id of the user who sent the message
+    userName: string    // UserName of the user who sent the message (= display name)
+    message: string     // The message itself
+}
 
 export interface Configuration {
     username: string,
@@ -26,47 +34,158 @@ export enum SupportedLanguage {
     GERMAN
 }
 
-export default function App() {
-    const [username, setUsername] = useState('test');
-    const [interfaceColor, setInterfaceColor] = useState(InterfaceColorOption.light);
-    const [clockDisplay, setClockDisplay] = useState(ClockDisplayOption.clock12h);
-    const [sendMessageOnCtrlEnter, setSendMessageOnCtrlEnter] = useState(true)
-    const [language, setLanguage] = useState(SupportedLanguage.ENGLISH);
+export interface ChatState {
+    messages: Array<ChatMessageProps>,
+    userId: string,
+}
 
-    return (
-        <Router>
-            <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Chat</Link>
-                        </li>
-                        <li>
-                            <Link to="/preferences">Preferences</Link>
-                        </li>
-                    </ul>
-                </nav>
+interface AppState {
+    chatState: ChatState,
+    configuration: Configuration
+}
 
-                <Switch>
-                    <Route path="/preferences">
-                        <Preferences
-                            username={username}
-                            onUsernameChange={setUsername}
-                            interfaceColor={interfaceColor}
-                            onInterfaceColorChange={setInterfaceColor}
-                            clockDisplay={clockDisplay}
-                            onClockDisplayChange={setClockDisplay}
-                            sendMessagesOnCtrlEnter={sendMessageOnCtrlEnter}
-                            onSendMessagesOnCtrlEnterChange={setSendMessageOnCtrlEnter}
-                            language={language}
-                            onLanguageChange={setLanguage}
-                        />
-                    </Route>
-                    <Route path="/">
-                        <Chat/>
-                    </Route>
-                </Switch>
-            </div>
-        </Router>
-    );
+export class App extends React.Component<{}, AppState> {
+    private socket: SocketIOClient.Socket;
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = {
+            chatState: {
+                userId: null,
+                messages: []
+            },
+            configuration: {
+                username: `anonymous-${Math.ceil(Math.random() * 99999)}`,
+                interfaceColor: InterfaceColorOption.light,
+                clockDisplay: ClockDisplayOption.clock12h,
+                sendMessagesOnCtrlEnter: true,
+                language: SupportedLanguage.ENGLISH
+            }
+        }
+
+        this.socket = io('http://localhost:3000');
+        this.socket.on('new-user-id', (newUserId: string) => {
+            this.setState({
+                chatState: {
+                    ...this.state.chatState,
+                    userId: newUserId
+                }
+            });
+        });
+        this.socket.on("new-chat-message", (newChatMessage: ChatMessageForServer) => {
+            this.setState({
+                chatState: {
+                    ...this.state.chatState,
+                    messages: [...this.state.chatState.messages, {
+                        ourMessage: this.state.chatState.userId === newChatMessage.fromId,
+                        userName: newChatMessage.userName,
+                        message: newChatMessage.message
+                    }]
+                }
+            })
+        });
+
+        this.handleSendMessageToServer = this.handleSendMessageToServer.bind(this);
+        this.setUsername = this.setUsername.bind(this);
+        this.setInterfaceColor = this.setInterfaceColor.bind(this);
+        this.setClockDisplay = this.setClockDisplay.bind(this);
+        this.setSendMessageOnCtrlEnter = this.setSendMessageOnCtrlEnter.bind(this);
+        this.setLanguage = this.setLanguage.bind(this);
+    }
+
+    handleSendMessageToServer(message: string) {
+        this.socket.emit('new-chat-message-to-server', {
+            userName: this.state.configuration.username,
+            message: message,
+        });
+    }
+
+    setUsername(newUsername: string) {
+        this.setState(
+            {
+                configuration: {
+                    ...this.state.configuration,
+                    username: newUsername
+                }
+            }
+        )
+    }
+
+    setInterfaceColor(newInterfaceColor: InterfaceColorOption) {
+        this.setState(
+            {
+                configuration: {
+                    ...this.state.configuration,
+                    interfaceColor: newInterfaceColor
+                }
+            }
+        )
+    }
+
+    setClockDisplay(newClockDisplay: ClockDisplayOption) {
+        this.setState(
+            {
+                configuration: {
+                    ...this.state.configuration,
+                    clockDisplay: newClockDisplay
+                }
+            }
+        )
+    }
+
+    setSendMessageOnCtrlEnter(newSendMessageOnCtrlEnter: boolean) {
+        this.setState(
+            {
+                configuration: {
+                    ...this.state.configuration,
+                    sendMessagesOnCtrlEnter: newSendMessageOnCtrlEnter
+                }
+            }
+        )
+    }
+
+    setLanguage(newLanguage: SupportedLanguage) {
+        this.setState({
+            configuration: {
+                ...this.state.configuration,
+                language: newLanguage
+            }
+        })
+    }
+
+    render() {
+        return (
+            <Router>
+                <div>
+                    <nav>
+                        <ul>
+                            <li>
+                                <Link to="/">Chat</Link>
+                            </li>
+                            <li>
+                                <Link to="/preferences">Preferences</Link>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <Switch>
+                        <Route path="/preferences">
+                            <Preferences {...this.state.configuration}
+                                         onUsernameChange={this.setUsername}
+                                         onInterfaceColorChange={this.setInterfaceColor}
+                                         onClockDisplayChange={this.setClockDisplay}
+                                         onSendMessagesOnCtrlEnterChange={this.setSendMessageOnCtrlEnter}
+                                         onLanguageChange={this.setLanguage}
+                            />
+                        </Route>
+                        <Route path="/">
+                            <Chat {...this.state.chatState}
+                                  onMessageSent={this.handleSendMessageToServer}/>
+                        </Route>
+                    </Switch>
+                </div>
+            </Router>
+        );
+    }
 }
