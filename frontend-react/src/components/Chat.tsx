@@ -5,6 +5,7 @@ import io from "socket.io-client"
 interface ChatState {
     messages: Array<ChatMessageProps>,
     userId: string,
+    userName: string,
     inputValue: string
 }
 
@@ -22,6 +23,7 @@ export class Chat extends React.Component<{}, ChatState> {
         this.state = {
             messages: [],
             userId: null,
+            userName: null,
             inputValue: ''
         };
 
@@ -33,7 +35,8 @@ export class Chat extends React.Component<{}, ChatState> {
             this.setState(prevState => {
                 return {
                     ...prevState,
-                    userId: newUserId
+                    userId: newUserId,
+                    userName: `anonymous-${Math.ceil(Math.random() * 99999)}`
                 }
             })
         });
@@ -63,7 +66,7 @@ export class Chat extends React.Component<{}, ChatState> {
 
     handleSendMessageToServer() {
         this.socket.emit('new-chat-message-to-server', {
-            userName: 'Chris',
+            userName: this.state.userName,
             message: this.state.inputValue,
         });
         this.setState(prevState => {

@@ -16,8 +16,6 @@ export function ChatMessage(props: ChatMessageProps) {
         userNameTag = <div>{props.userName}</div>;
     }
 
-
-
     return <div className={bubbleClass}>
         {userNameTag}
         <div>{props.message}</div>
