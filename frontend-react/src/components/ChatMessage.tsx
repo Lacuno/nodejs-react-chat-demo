@@ -1,6 +1,6 @@
 import * as React from "react";
 import {format} from "date-fns"
-import {ClockDisplayOption, Configuration, InterfaceColorOption} from "./App";
+import {ClockDisplayOption, Configuration} from "./App";
 
 export interface ChatMessageProps {
     message: string,
@@ -20,12 +20,8 @@ export function ChatMessage(props: ChatMessageProps) {
         userNameTag = <div className="header">{props.userName}</div>;
     }
 
-    if(props.configuration.interfaceColor === InterfaceColorOption.dark) {
-        bubbleClass += ' darkmode'
-    }
-
     let time;
-    if(props.configuration.clockDisplay === ClockDisplayOption.clock12h) {
+    if (props.configuration.clockDisplay === ClockDisplayOption.clock12h) {
         time = format(props.time, "HH:mm a");
     } else {
         time = format(props.time, "HH:mm")

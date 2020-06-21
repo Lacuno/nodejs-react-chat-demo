@@ -123,7 +123,15 @@ export class App extends React.Component<{}, AppState> {
                     interfaceColor: newInterfaceColor
                 }
             }
-        )
+        );
+
+        if(newInterfaceColor === InterfaceColorOption.dark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            console.log('dark')
+        } else {
+            document.documentElement.removeAttribute('data-theme')
+        }
+
     }
 
     setClockDisplay(newClockDisplay: ClockDisplayOption) {

@@ -1,8 +1,17 @@
-$primaryColor: #dcf8c6;
-$secondaryColor: #d13d3d;
-$borderColor: #c4dbb1;
-$shadowColor: #6a904d;
+html {
+  --primary-color: #dcf8c6;
+  --secondary-color: #d13d3d;
+  --border-color: #c4dbb1;
+  --shadow-color: #6a904d;
+  --background-color: white;
+  --text-color: black;
+}
 
-$darkPrimaryColor: #215703;
-$darkBorderColor: #142305;
-$darkShadowColor: #090000;
+html[data-theme='dark'] {
+  --primary-color: #1F2C34;
+  --secondary-color: orange;
+  --border-color: #c4dbb1;
+  --shadow-color: #6a904d;
+  --background-color: #232323;
+  --text-color: white;
+}
