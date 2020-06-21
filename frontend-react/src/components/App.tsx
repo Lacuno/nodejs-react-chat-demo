@@ -76,6 +76,10 @@ export class App extends React.Component<{}, AppState> {
         });
         this.socket.on("new-chat-message", (newChatMessage: ChatMessageProps) => {
             newChatMessage.time = new Date(newChatMessage.time);
+            newChatMessage = {
+                ...newChatMessage,
+                configuration: this.state.configuration
+            }
             this.setState({
                 chatState: {
                     ...this.state.chatState,

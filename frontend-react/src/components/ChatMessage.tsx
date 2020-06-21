@@ -1,12 +1,13 @@
 import * as React from "react";
 import {format} from "date-fns"
+import {ClockDisplayOption, Configuration, InterfaceColorOption} from "./App";
 
 export interface ChatMessageProps {
     message: string,
     userName: string,
     time: Date,
     ourMessage: boolean
-    darkMode: boolean
+    configuration: Configuration
 }
 
 export function ChatMessage(props: ChatMessageProps) {
@@ -19,17 +20,22 @@ export function ChatMessage(props: ChatMessageProps) {
         userNameTag = <div className="header">{props.userName}</div>;
     }
 
-    console.log('dark_mode: ' + props.darkMode)
-    if(props.darkMode) {
+    if(props.configuration.interfaceColor === InterfaceColorOption.dark) {
         bubbleClass += ' darkmode'
     }
-    console.log(props.time);
-    console.log(typeof props.time);
+
+    let time;
+    if(props.configuration.clockDisplay === ClockDisplayOption.clock12h) {
+        time = format(props.time, "HH:mm a");
+    } else {
+        time = format(props.time, "HH:mm")
+    }
+
 
     return <div className={bubbleClass}>
         {userNameTag}
         <div>{props.message}</div>
-        <div className="display-time">{format(props.time, "HH:mm")}</div>
+        <div className="display-time">{time}</div>
     </div>;
 }
 
