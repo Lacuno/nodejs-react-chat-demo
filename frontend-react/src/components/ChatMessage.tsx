@@ -22,7 +22,7 @@ export function ChatMessage(props: ChatMessageProps) {
 
     let time;
     if (props.configuration.clockDisplay === ClockDisplayOption.clock12h) {
-        time = format(props.time, "HH a:mm a");
+        time = format(props.time, "hh:mm a");
     } else {
         time = format(props.time, "HH:mm")
     }
