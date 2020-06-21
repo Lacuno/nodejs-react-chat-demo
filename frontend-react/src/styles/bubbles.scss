@@ -60,14 +60,13 @@
       font-weight: bold;
       color: var(--secondary-color);
     }
-
-    & div.display-time {
-      position: relative;
-      bottom: -0.9em;
-      right: -0.9em;
-      font-size: 0.8em;
-      color: grey;
-      text-align: right;
-    }
+  }
+  & div.display-time {
+    position: relative;
+    bottom: -0.9em;
+    right: -0.9em;
+    font-size: 0.8em;
+    color: grey;
+    text-align: right;
   }
 }
