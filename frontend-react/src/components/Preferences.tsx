@@ -41,7 +41,7 @@ export function Preferences(props: PreferencesProps) {
         <label>On</label>
         <input type="radio" name="messages-on-ctrl-enter" value="off"
                checked={!props.sendMessagesOnCtrlEnter}
-               onChange={() => props.onSendMessagesOnCtrlEnterChange(true)}/>
+               onChange={() => props.onSendMessagesOnCtrlEnterChange(false)}/>
         <label>Off</label>
 
         <h1>Language</h1>
