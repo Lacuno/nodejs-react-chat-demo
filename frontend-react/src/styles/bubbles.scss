@@ -26,8 +26,6 @@
       top: -1px;
       border: 1em solid;
       border-color: $borderColor transparent transparent transparent;
-
-
     }
 
     &:after {
@@ -78,6 +76,23 @@
       &:after {
         border-color: $darkPrimaryColor transparent transparent transparent;
       }
+    }
+
+    & div.header {
+      position: relative;
+      top: -0.9em;
+      font-size: 0.8em;
+      font-weight: bold;
+      color: $secondaryColor;
+    }
+
+    & div.display-time {
+      position: relative;
+      bottom: -0.9em;
+      right: -0.9em;
+      font-size: 0.8em;
+      color: grey;
+      text-align: right;
     }
   }
 }

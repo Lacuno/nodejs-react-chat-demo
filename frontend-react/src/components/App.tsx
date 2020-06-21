@@ -9,6 +9,7 @@ export interface ChatMessageForServer {
     fromId: string,     // Id of the user who sent the message
     userName: string    // UserName of the user who sent the message (= display name)
     message: string     // The message itself
+    timestamp: Date     // Time when the message was published
 }
 
 export interface Configuration {
@@ -73,16 +74,12 @@ export class App extends React.Component<{}, AppState> {
                 }
             });
         });
-        this.socket.on("new-chat-message", (newChatMessage: ChatMessageForServer) => {
+        this.socket.on("new-chat-message", (newChatMessage: ChatMessageProps) => {
+            newChatMessage.time = new Date(newChatMessage.time);
             this.setState({
                 chatState: {
                     ...this.state.chatState,
-                    messages: [...this.state.chatState.messages, {
-                        ourMessage: this.state.chatState.userId === newChatMessage.fromId,
-                        userName: newChatMessage.userName,
-                        message: newChatMessage.message,
-                        darkMode: this.state.configuration.interfaceColor === InterfaceColorOption.dark
-                    }]
+                    messages: [...this.state.chatState.messages, newChatMessage]
                 }
             })
         });
@@ -98,6 +95,7 @@ export class App extends React.Component<{}, AppState> {
     handleSendMessageToServer(message: string) {
         this.socket.emit('new-chat-message-to-server', {
             userName: this.state.configuration.username,
+            time: new Date(),
             message: message,
         });
     }
