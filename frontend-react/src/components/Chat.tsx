@@ -11,6 +11,7 @@ interface ChatUiState {
 }
 
 export class Chat extends React.Component<ChatUiProps, ChatUiState> {
+    private messagesEnd: HTMLDivElement;
     constructor(props: any) {
         super(props);
         this.state = {
@@ -52,6 +53,14 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
         }
     }
 
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom();
+    }
+
     render() {
         const footerStyle = {
             height: '2em',
@@ -62,9 +71,10 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
             return <ChatMessage {...message}/>
         });
 
-        return <div className="full-screen column-layout">
+        return <div className="column-layout stretch">
             <main className="column-layout stretch overflow-y">
                 {chatMessages}
+                <div id="dummy" ref={(el) => { this.messagesEnd = el; }}/>
             </main>
             <footer style={footerStyle} className="row-layout">
                 <input className="stretch" value={this.state.inputValue}

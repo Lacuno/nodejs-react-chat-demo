@@ -168,7 +168,7 @@ export class App extends React.Component<{}, AppState> {
     render() {
         return (
             <Router>
-                <div>
+                <div className="full-screen column-layout">
                     <nav>
                         <ul>
                             <li>
