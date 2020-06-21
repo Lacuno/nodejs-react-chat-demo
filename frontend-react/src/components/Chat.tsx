@@ -19,6 +19,7 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSendMessageToServer = this.handleSendMessageToServer.bind(this);
+        this.keyDownHandler = this.keyDownHandler.bind(this);
     }
 
     handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -44,6 +45,13 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
         });
     }
 
+    keyDownHandler(event: React.KeyboardEvent) {
+        const onCtrlEnter = event.ctrlKey && event.keyCode === 13;
+        if (this.props.sendMessagesOnCtrlEnter && onCtrlEnter) {
+            this.handleSendMessageToServer();
+        }
+    }
+
     render() {
         const footerStyle = {
             height: '2em',
@@ -59,8 +67,11 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
                 {chatMessages}
             </main>
             <footer style={footerStyle} className="row-layout">
-                <input className="stretch" value={this.state.inputValue} onChange={this.handleChange}/>
-                <button onClick={this.handleSendMessageToServer}>Send</button>
+                <input className="stretch" value={this.state.inputValue}
+                       onChange={this.handleChange}
+                       onKeyDown={this.keyDownHandler}/>
+                <button onClick={this.handleSendMessageToServer}>Send
+                </button>
             </footer>
         </div>;
     }

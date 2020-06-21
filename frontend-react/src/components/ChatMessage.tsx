@@ -31,7 +31,6 @@ export function ChatMessage(props: ChatMessageProps) {
         time = format(props.time, "HH:mm")
     }
 
-
     return <div className={bubbleClass}>
         {userNameTag}
         <div>{props.message}</div>
