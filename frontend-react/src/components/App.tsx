@@ -88,6 +88,18 @@ export function App() {
         }
     }, []);
 
+    useEffect(() => {
+        i18n.changeLanguage(configuration.language);
+    }, [configuration.language]);
+
+    useEffect(() => {
+        if (configuration.interfaceColor === InterfaceColorOption.dark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme')
+        }
+    }, [configuration.interfaceColor])
+
 
     const handleSendMessageToServer = (message: string) => {
         socket.emit('new-chat-message-to-server', {
@@ -98,20 +110,6 @@ export function App() {
     }
 
     const {t, i18n} = useTranslation();
-
-    const setInterfaceColor = (newInterfaceColor: InterfaceColorOption) => {
-        setConfiguration({...configuration, interfaceColor: newInterfaceColor});
-        if (newInterfaceColor === InterfaceColorOption.dark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme')
-        }
-    }
-
-    const setLanguage = (newLanguage: SupportedLanguage) => {
-        setConfiguration({...configuration, language: newLanguage});
-        i18n.changeLanguage(newLanguage);
-    }
 
     const resetConfiguration = () => {
         setConfiguration({
@@ -141,7 +139,10 @@ export function App() {
                     <Route path="/preferences">
                         <Preferences {...configuration}
                                      onUsernameChange={val => setConfiguration({...configuration, username: val})}
-                                     onInterfaceColorChange={setInterfaceColor}
+                                     onInterfaceColorChange={val => setConfiguration({
+                                         ...configuration,
+                                         interfaceColor: val
+                                     })}
                                      onClockDisplayChange={val => setConfiguration({
                                          ...configuration,
                                          clockDisplay: val
@@ -150,7 +151,7 @@ export function App() {
                                          ...configuration,
                                          sendMessagesOnCtrlEnter: val
                                      })}
-                                     onLanguageChange={setLanguage}
+                                     onLanguageChange={val => setConfiguration({...configuration, language: val})}
                                      onResetConfiguration={resetConfiguration}
                         />
                     </Route>
