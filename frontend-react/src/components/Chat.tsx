@@ -1,8 +1,9 @@
 import * as React from "react";
 import {ChatMessage} from "./ChatMessage";
-import {ChatState, Configuration} from "./App";
+import {ChatState, Configuration, Message} from "./App";
 
-export interface ChatUiProps extends ChatState, Configuration {
+export interface ChatUiProps extends ChatState {
+    configuration: Configuration,
     onMessageSent: (message: string) => void
 }
 
@@ -49,7 +50,7 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
 
     keyDownHandler(event: React.KeyboardEvent) {
         const onCtrlEnter = event.ctrlKey && event.keyCode === 13;
-        if (this.props.sendMessagesOnCtrlEnter && onCtrlEnter) {
+        if (this.props.configuration.sendMessagesOnCtrlEnter && onCtrlEnter) {
             this.handleSendMessageToServer();
         }
     }
@@ -68,8 +69,13 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
             padding: '3px',
         };
 
-        const chatMessages = this.props.messages.map((message, idx) => {
-            return <ChatMessage key={idx} {...message}/>
+        const chatMessages = this.props.messages.map((message: Message, idx) => {
+            return <ChatMessage key={idx}
+                                time={message.time}
+                                userName={message.username}
+                                ourMessage={message.ourMessage}
+                                message={message.text}
+                                configuration={this.props.configuration}/>
         });
 
         return <div className="column-layout stretch">

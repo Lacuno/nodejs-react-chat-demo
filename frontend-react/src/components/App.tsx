@@ -2,8 +2,6 @@ import React, {useEffect, useRef, useState} from "react";
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {Chat} from "./Chat";
 import {Preferences} from "./Preferences";
-
-import {ChatMessageProps} from "./ChatMessage";
 import io from "socket.io-client";
 import {useTranslation} from "react-i18next";
 
@@ -38,10 +36,16 @@ export enum SupportedLanguage {
 }
 
 export interface ChatState {
-    messages: Array<ChatMessageProps>,
+    messages: Array<Message>,
     userId: string,
 }
 
+export interface Message {
+    username: string,
+    text: string,
+    time: Date,
+    ourMessage: boolean
+}
 
 export function App() {
     const [chatState, setChatState] = useState({
@@ -71,13 +75,7 @@ export function App() {
         });
         socket.on('new-chat-message', (newChatMessage: any) => {
             newChatMessage.time = new Date(newChatMessage.time);
-
             newChatMessage.ourMessage = chatStateRef.current.userId === newChatMessage.fromId;
-            newChatMessage = {
-                ...newChatMessage,
-                configuration: configuration
-            }
-
             setChatState({
                 ...chatStateRef.current,
                 messages: [...chatStateRef.current.messages, newChatMessage]
@@ -103,9 +101,9 @@ export function App() {
 
     const handleSendMessageToServer = (message: string) => {
         socket.emit('new-chat-message-to-server', {
-            userName: configuration.username,
+            username: configuration.username,
             time: new Date(),
-            message: message,
+            text: message,
         });
     }
 
@@ -157,7 +155,7 @@ export function App() {
                     </Route>
                     <Route path="/">
                         <Chat {...chatState}
-                              {...configuration}
+                              configuration={configuration}
                               onMessageSent={handleSendMessageToServer}/>
                     </Route>
                 </Switch>

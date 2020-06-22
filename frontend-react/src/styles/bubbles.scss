@@ -19,6 +19,7 @@
       top: -1px;
       border: 1em solid;
       border-color: var(--border-color) transparent transparent transparent;
+      filter: drop-shadow(2px 2px 1px var(--shadow-color));
     }
 
     &:after {
@@ -64,7 +65,7 @@
   & div.display-time {
     position: relative;
     bottom: -0.9em;
-    right: -0.9em;
+    right: -0.8em;
     font-size: 0.8em;
     color: grey;
     text-align: right;
