@@ -74,6 +74,9 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
 
         return <div className="column-layout stretch">
             <main className="column-layout stretch overflow-y">
+                <p>
+                    Welcome to our chat. Everybody who is connected to this chat will read your messages. Enjoy!
+                </p>
                 {chatMessages}
                 <div id="dummy" ref={(el) => {
                     this.messagesEnd = el;

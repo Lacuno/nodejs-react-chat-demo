@@ -113,6 +113,16 @@ export function App() {
         i18n.changeLanguage(newLanguage);
     }
 
+    const resetConfiguration = () => {
+        setConfiguration({
+            username: `anonymous-${Math.ceil(Math.random() * 99999)}`,
+            interfaceColor: InterfaceColorOption.light,
+            clockDisplay: ClockDisplayOption.clock12h,
+            sendMessagesOnCtrlEnter: true,
+            language: SupportedLanguage.ENGLISH
+        } as Configuration);
+    }
+
     return (
         <Router>
             <div className="full-screen column-layout">
@@ -141,6 +151,7 @@ export function App() {
                                          sendMessagesOnCtrlEnter: val
                                      })}
                                      onLanguageChange={setLanguage}
+                                     onResetConfiguration={resetConfiguration}
                         />
                     </Route>
                     <Route path="/">
