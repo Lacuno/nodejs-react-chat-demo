@@ -32,7 +32,7 @@ i18next.use(initReactI18next).init({
                 'prev-header-username': 'Benutzername',
                 'prev-header-interfacecolor': 'Farbeinstellung',
                 'prev-header-clockdisplay': 'Zeitformat',
-                'prev-header-ctrlenter': 'Nachrichten mit Strg+Enter schicken',
+                'prev-header-ctrlenter': 'Nachrichten mit Strg+Enter senden',
                 'prev-header-language': 'Sprache',
                 'prev-option-interfacecolor-light': 'Hell',
                 'prev-option-interfacecolor-dark': 'Dunkel',
