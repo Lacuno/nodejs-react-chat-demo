@@ -4,8 +4,10 @@
   "license": "MIT",
   "dependencies": {
     "date-fns": "^2.14.0",
+    "i18next": "^19.5.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-i18next": "^11.7.0",
     "react-router-dom": "^5.2.0",
     "socket.io-client": "^2.3.0"
   },
@@ -35,6 +37,7 @@
     "@types/date-fns": "^2.6.0",
     "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
+    "@types/react-i18next": "^8.1.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/socket.io-client": "^1.4.33",
     "css-loader": "^3.6.0",
