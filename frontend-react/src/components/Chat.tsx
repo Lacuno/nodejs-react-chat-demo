@@ -68,8 +68,8 @@ export class Chat extends React.Component<ChatUiProps, ChatUiState> {
             padding: '3px',
         };
 
-        const chatMessages = this.props.messages.map(message => {
-            return <ChatMessage {...message}/>
+        const chatMessages = this.props.messages.map((message, idx) => {
+            return <ChatMessage key={idx} {...message}/>
         });
 
         return <div className="column-layout stretch">
