@@ -1,6 +1,6 @@
 import * as React from "react";
 import {format} from "date-fns"
-import {ClockDisplayOption, Configuration} from "./App";
+import {ClockDisplayOption, Configuration} from "../domain/Configuration";
 
 export interface ChatMessageProps {
     message: string,

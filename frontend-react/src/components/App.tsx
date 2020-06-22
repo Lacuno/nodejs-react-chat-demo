@@ -4,36 +4,8 @@ import {Chat} from "./Chat";
 import {Preferences} from "./Preferences";
 import io from "socket.io-client";
 import {useTranslation} from "react-i18next";
-
-export interface ChatMessageForServer {
-    fromId: string,     // Id of the user who sent the message
-    userName: string    // UserName of the user who sent the message (= display name)
-    message: string     // The message itself
-    timestamp: Date     // Time when the message was published
-}
-
-export interface Configuration {
-    username: string,
-    interfaceColor: InterfaceColorOption,
-    clockDisplay: ClockDisplayOption,
-    sendMessagesOnCtrlEnter: boolean
-    language: SupportedLanguage
-}
-
-export enum InterfaceColorOption {
-    light,
-    dark
-}
-
-export enum ClockDisplayOption {
-    clock12h,
-    clock24h
-}
-
-export enum SupportedLanguage {
-    ENGLISH = 'en',
-    GERMAN = 'de'
-}
+import {ClockDisplayOption, Configuration, InterfaceColorOption, SupportedLanguage} from "../domain/Configuration";
+import {ChatMessageForServer, ChatMessageFromServer} from "../domain/ServerCommunication";
 
 export interface ChatState {
     messages: Array<Message>,
@@ -73,12 +45,16 @@ export function App() {
                 userId: newUserId
             });
         });
-        socket.on('new-chat-message', (newChatMessage: any) => {
-            newChatMessage.time = new Date(newChatMessage.time);
-            newChatMessage.ourMessage = chatStateRef.current.userId === newChatMessage.fromId;
+        socket.on('new-chat-message', (messageFromServer: ChatMessageFromServer) => {
+            const message = {
+                username: messageFromServer.username,
+                text: messageFromServer.text,
+                time: new Date(messageFromServer.time),
+                ourMessage: chatStateRef.current.userId === messageFromServer.fromId,
+            } as Message;
             setChatState({
                 ...chatStateRef.current,
-                messages: [...chatStateRef.current.messages, newChatMessage]
+                messages: [...chatStateRef.current.messages, message]
             });
         });
         return () => {
@@ -96,7 +72,7 @@ export function App() {
         } else {
             document.documentElement.removeAttribute('data-theme')
         }
-    }, [configuration.interfaceColor])
+    }, [configuration.interfaceColor]);
 
 
     const handleSendMessageToServer = (message: string) => {
@@ -104,7 +80,7 @@ export function App() {
             username: configuration.username,
             time: new Date(),
             text: message,
-        });
+        } as ChatMessageForServer);
     }
 
     const {t, i18n} = useTranslation();

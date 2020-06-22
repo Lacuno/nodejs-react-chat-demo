@@ -1,6 +1,6 @@
 import React from "react";
-import {ClockDisplayOption, Configuration, InterfaceColorOption, SupportedLanguage} from "./App";
 import {useTranslation} from "react-i18next";
+import {ClockDisplayOption, Configuration, InterfaceColorOption, SupportedLanguage} from "../domain/Configuration";
 
 interface PreferencesProps extends Configuration {
     onUsernameChange: (newUsername: string) => void;

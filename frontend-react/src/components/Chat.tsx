@@ -1,6 +1,7 @@
 import * as React from "react";
 import {ChatMessage} from "./ChatMessage";
-import {ChatState, Configuration, Message} from "./App";
+import {ChatState, Message} from "./App";
+import {Configuration} from "../domain/Configuration";
 
 export interface ChatUiProps extends ChatState {
     configuration: Configuration,
