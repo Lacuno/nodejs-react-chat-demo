@@ -14,7 +14,7 @@ interface PreferencesProps extends Configuration {
 export function Preferences(props: PreferencesProps) {
     const {t} = useTranslation();
 
-    return <main className="container">
+    return <main className="container overflow-y">
         <h1>{t('prev-header-username')}</h1>
         <input name="usernameInput" value={props.username} onChange={e => props.onUsernameChange(e.target.value)}/>
 

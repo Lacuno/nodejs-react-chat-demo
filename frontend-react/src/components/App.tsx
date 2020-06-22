@@ -6,45 +6,54 @@ import io from "socket.io-client";
 import {useTranslation} from "react-i18next";
 import {ClockDisplayOption, Configuration, InterfaceColorOption, SupportedLanguage} from "../domain/Configuration";
 import {ChatMessageForServer, ChatMessageFromServer} from "../domain/ServerCommunication";
+import {ActiveTab} from "../domain/ActiveTab";
+
+// Message interface used for our components as state and props
+export interface Message {
+    username: string,       // Display username
+    text: string,           // The message itself
+    time: Date,             // Time when the message was sent
+    ourMessage: boolean     // Indicates if the message was sent by us (true) or not (false)
+}
 
 export interface ChatState {
-    messages: Array<Message>,
-    userId: string,
+    messages: Array<Message>,   // All displayed messages
+    userId: string,             // A UUID of the user which will be given by the server on connect
 }
 
-export interface Message {
-    username: string,
-    text: string,
-    time: Date,
-    ourMessage: boolean
-}
+const defaultConfiguration = {
+    username: `anonymous-${Math.ceil(Math.random() * 99999)}`,
+    interfaceColor: InterfaceColorOption.light,
+    clockDisplay: ClockDisplayOption.clock12h,
+    sendMessagesOnCtrlEnter: true,
+    language: SupportedLanguage.ENGLISH
+} as Configuration;
 
 export function App() {
     const [chatState, setChatState] = useState({
         userId: null,
         messages: []
     } as ChatState);
-    const [configuration, setConfiguration] = useState({
-        username: `anonymous-${Math.ceil(Math.random() * 99999)}`,
-        interfaceColor: InterfaceColorOption.light,
-        clockDisplay: ClockDisplayOption.clock12h,
-        sendMessagesOnCtrlEnter: true,
-        language: SupportedLanguage.ENGLISH
-    } as Configuration);
+    const [configuration, setConfiguration] = useState(defaultConfiguration);
+    const [activeTab, setActiveTab] = useState(ActiveTab.Chat);
 
     // We need this reference to access the current chatstate in the socket-callbacks inside the effect
     // If we don't use a ref here, we will always access the initial state
     const chatStateRef = useRef<ChatState>();
     chatStateRef.current = chatState;
 
+    // Socket communication
     const {current: socket} = useRef(io('http://localhost:3000'));
     useEffect(() => {
+        // On connect the server will assign a new UUID to the connecting user
+        // Since we broadcast the messages this id then indicates if the message belonged to us or not
         socket.on('new-user-id', (newUserId: string) => {
             setChatState({
                 ...chatStateRef.current,
                 userId: newUserId
             });
         });
+        // New chat message arrives -> add it to the others
         socket.on('new-chat-message', (messageFromServer: ChatMessageFromServer) => {
             const message = {
                 username: messageFromServer.username,
@@ -86,13 +95,7 @@ export function App() {
     const {t, i18n} = useTranslation();
 
     const resetConfiguration = () => {
-        setConfiguration({
-            username: `anonymous-${Math.ceil(Math.random() * 99999)}`,
-            interfaceColor: InterfaceColorOption.light,
-            clockDisplay: ClockDisplayOption.clock12h,
-            sendMessagesOnCtrlEnter: true,
-            language: SupportedLanguage.ENGLISH
-        } as Configuration);
+        setConfiguration(defaultConfiguration);
     }
 
     return (
@@ -101,16 +104,20 @@ export function App() {
                 <nav>
                     <ul>
                         <li>
-                            <Link to="/">{t('nav-chat')}</Link>
+                            <Link to={ActiveTab.Chat}
+                                  className={activeTab === ActiveTab.Chat ? 'active' : ''}
+                                  onClick={() => setActiveTab(ActiveTab.Chat)}>{t('nav-chat')}</Link>
                         </li>
                         <li>
-                            <Link to="/preferences">{t('nav-preferences')}</Link>
+                            <Link to={ActiveTab.Preferences}
+                                  className={activeTab === ActiveTab.Preferences ? 'active' : ''}
+                                  onClick={() => setActiveTab(ActiveTab.Preferences)}>{t('nav-preferences')}</Link>
                         </li>
                     </ul>
                 </nav>
 
                 <Switch>
-                    <Route path="/preferences">
+                    <Route path={ActiveTab.Preferences}>
                         <Preferences {...configuration}
                                      onUsernameChange={val => setConfiguration({...configuration, username: val})}
                                      onInterfaceColorChange={val => setConfiguration({
@@ -129,7 +136,7 @@ export function App() {
                                      onResetConfiguration={resetConfiguration}
                         />
                     </Route>
-                    <Route path="/">
+                    <Route path={ActiveTab.Chat}>
                         <Chat {...chatState}
                               configuration={configuration}
                               onMessageSent={handleSendMessageToServer}/>

@@ -22,7 +22,9 @@ i18next.use(initReactI18next).init({
                 'prev-option-clockdisplay-24h': '24 Hours',
                 'prev-option-ctrlenter-on': 'On',
                 'prev-option-ctrlenter-off': 'Off',
-                'prev-button-reset_to_defaults': 'Reset to defaults'
+                'prev-button-reset_to_defaults': 'Reset to defaults',
+                'chat-welcome-message': 'Welcome to our chat. Everybody who is connected to this chat will read your messages. Enjoy!',
+                'chat-button-send': 'Send'
             }
         },
         de: {
@@ -40,7 +42,9 @@ i18next.use(initReactI18next).init({
                 'prev-option-clockdisplay-24h': '24 Stunden',
                 'prev-option-ctrlenter-on': 'An',
                 'prev-option-ctrlenter-off': 'Aus',
-                'prev-button-reset_to_defaults': 'Zurücksetzen'
+                'prev-button-reset_to_defaults': 'Zurücksetzen',
+                'chat-welcome-message': 'Willkommen! Jeder verbundene Benutzer kann die gesendeten Nachrichten lesen. Viel Spaß!',
+                'chat-button-send': 'Senden'
             }
         }
     },

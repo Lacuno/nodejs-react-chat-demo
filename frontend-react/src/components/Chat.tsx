@@ -1,101 +1,62 @@
 import * as React from "react";
+import {useEffect, useRef, useState} from "react";
 import {ChatMessage} from "./ChatMessage";
 import {ChatState, Message} from "./App";
 import {Configuration} from "../domain/Configuration";
+import {useTranslation} from "react-i18next";
 
 export interface ChatUiProps extends ChatState {
     configuration: Configuration,
     onMessageSent: (message: string) => void
 }
 
-interface ChatUiState {
-    inputValue: string;
-}
+export function Chat(props: ChatUiProps) {
+    const [inputValue, setInputValue] = useState('');
+    const {t} = useTranslation();
 
-export class Chat extends React.Component<ChatUiProps, ChatUiState> {
-    private messagesEnd: HTMLDivElement;
+    // This reference to a div on the bottom of the chat messages it used to scroll to it whenever a new message arrives
+    const chatmessageEnd = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        chatmessageEnd.current.scrollIntoView({behavior: "smooth"});
+    }, [props.messages]);
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            inputValue: ''
-        };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSendMessageToServer = this.handleSendMessageToServer.bind(this);
-        this.keyDownHandler = this.keyDownHandler.bind(this);
-    }
-
-    handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const value = event.target.value;
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                inputValue: value
-            }
-        })
-    }
-
-    handleSendMessageToServer() {
-        if (!this.state.inputValue) {
+    const handleSendMessageToServer = () => {
+        if (!inputValue) {
             return;
         }
-        this.props.onMessageSent(this.state.inputValue);
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                inputValue: ''
-            }
-        });
+        props.onMessageSent(inputValue);
+        setInputValue('');
     }
 
-    keyDownHandler(event: React.KeyboardEvent) {
+    const keyDownHandler = (event: React.KeyboardEvent) => {
         const onCtrlEnter = event.ctrlKey && event.keyCode === 13;
-        if (this.props.configuration.sendMessagesOnCtrlEnter && onCtrlEnter) {
-            this.handleSendMessageToServer();
+        if (props.configuration.sendMessagesOnCtrlEnter && onCtrlEnter) {
+            handleSendMessageToServer();
         }
     }
 
-    scrollToBottom = () => {
-        this.messagesEnd.scrollIntoView({behavior: "smooth"});
-    }
+    const chatMessages = props.messages.map((message: Message, idx) => {
+        return <ChatMessage key={idx}
+                            time={message.time}
+                            userName={message.username}
+                            ourMessage={message.ourMessage}
+                            message={message.text}
+                            configuration={props.configuration}/>
+    });
 
-    componentDidUpdate() {
-        this.scrollToBottom();
-    }
-
-    render() {
-        const footerStyle = {
-            height: '2em',
-            padding: '3px',
-        };
-
-        const chatMessages = this.props.messages.map((message: Message, idx) => {
-            return <ChatMessage key={idx}
-                                time={message.time}
-                                userName={message.username}
-                                ourMessage={message.ourMessage}
-                                message={message.text}
-                                configuration={this.props.configuration}/>
-        });
-
-        return <div className="column-layout stretch">
-            <main className="column-layout stretch overflow-y">
-                <p>
-                    Welcome to our chat. Everybody who is connected to this chat will read your messages. Enjoy!
-                </p>
-                {chatMessages}
-                <div id="dummy" ref={(el) => {
-                    this.messagesEnd = el;
-                }}/>
-            </main>
-            <footer style={footerStyle} className="row-layout">
-                <input className="stretch" value={this.state.inputValue}
-                       onChange={this.handleChange}
-                       onKeyDown={this.keyDownHandler}/>
-                <button onClick={this.handleSendMessageToServer}>Send
-                </button>
-            </footer>
-        </div>;
-    }
+    return <div className="column-layout stretch">
+        <main className="column-layout stretch overflow-y">
+            <p>
+                {t('chat-welcome-message')}
+            </p>
+            {chatMessages}
+            <div id="dummy" ref={chatmessageEnd}/>
+        </main>
+        <footer className="row-layout">
+            <input className="stretch" value={inputValue}
+                   onChange={event => setInputValue(event.target.value)}
+                   onKeyDown={keyDownHandler}/>
+            <button onClick={handleSendMessageToServer}>{t('chat-button-send')}</button>
+        </footer>
+    </div>;
 }
