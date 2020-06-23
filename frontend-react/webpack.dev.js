@@ -3,7 +3,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
-    mode: "production",
+    mode: "development",
     devtool: "source-map",
 
     entry: {
@@ -14,7 +14,10 @@ module.exports = {
         filename: '[name].[hash:8].js'
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js"]
+        extensions: [".ts", ".tsx", ".js"],
+        alias: {
+            'api': path.join(path.join(__dirname, 'api.dev.ts'))
+        }
     },
 
     module: {

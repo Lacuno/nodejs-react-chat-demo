@@ -1,10 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
 import io from "socket.io-client";
 import {useTranslation} from "react-i18next";
-import {Configuration, defaultConfiguration, InterfaceColorOption} from "../domain/Configuration";
+import {Configuration, defaultConfiguration, InterfaceColorOption,} from "../domain/Configuration";
 import {AppRouter} from "./AppRouter";
 import {i18n} from "i18next";
 import {handleSendMessageToServer, setupSocketCommunication} from "../server-communication/ServerCommunication";
+import {getSavedConfiguration, saveConfiguration} from "../local-storage/ConfigurationLoader";
+// api is set as a webpack alias
+// @ts-ignore
+import {apiUrl} from 'api';
 
 // Message interface used for our components as state and props
 export interface Message {
@@ -40,7 +44,7 @@ export function App() {
         userId: null,
         messages: []
     } as ChatState);
-    const [configuration, setConfiguration] = useState(defaultConfiguration);
+    const [configuration, setConfiguration] = useState(getSavedConfiguration());
     const {i18n} = useTranslation();
 
     // We need this reference to access the current chatstate in the socket-callbacks inside the effect
@@ -48,10 +52,13 @@ export function App() {
     const chatStateRef = useRef<ChatState>();
     chatStateRef.current = chatState;
 
-    const {current: socket} = useRef(io());
+    const {current: socket} = useRef(io(apiUrl));
     setupSocketCommunication(socket, setChatState, chatStateRef);
     setupLanguageChangeDectection(i18n, configuration);
     setupInterfaceColorChangeDetection(configuration);
+    useEffect(() => {
+        saveConfiguration(configuration);
+    }, [configuration])
 
     const resetConfiguration = () => {
         setConfiguration(defaultConfiguration);
