@@ -16,7 +16,7 @@ export interface AppRouterProps {
 }
 
 export function AppRouter(props: AppRouterProps) {
-    const [activeTab, setActiveTab] = useState(ActiveTab.Chat);
+    const [activeTab, setActiveTab] = useState(window.location.pathname);
     const {t} = useTranslation();
 
     return <Router>
