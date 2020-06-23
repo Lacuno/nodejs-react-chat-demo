@@ -43,7 +43,7 @@ export function App() {
     chatStateRef.current = chatState;
 
     // Socket communication
-    const {current: socket} = useRef(io('http://localhost:3000'));
+    const {current: socket} = useRef(io());
     useEffect(() => {
         // On connect the server will assign a new UUID to the connecting user
         // Since we broadcast the messages this id then indicates if the message belonged to us or not
