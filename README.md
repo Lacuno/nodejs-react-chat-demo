@@ -44,7 +44,15 @@ Go to `<projectdir>/backend-node` and execute `node index.js` to start the serve
   - [x] Choose option to send message on Ctrl+Enter: On or off
   - [x] Language options: Currently English and German are supported
   - [x] Reset to defaults button
-  - [ ] Preferences are saved to local-storage 
+  - [x] Preferences are saved to local-storage 
+
+## Testing
+
+Currently there are only end-to-end tests for this project.
+To run the tests do the following:
+ - Make sure the server is started on localhost:3000
+ - Use `yarn run e2e` to open up the tests
+ - Choose the browser you want to use and start the test via the provided graphical user interface
 
 ## Miscellaneous
 
@@ -57,12 +65,12 @@ design. And it has to work both portrait and landscape orientation;
 - [x] It should work on desktop/tablet/phone at least on the following browsers:
 Chrome, Firefox and Safari. Consider the latest versions for each browser;
 - [x] Please, do not use any tool like or similar to create-react-app;
-- [ ] Write at least some tests that would cover the main functionality of your app. We do not expect to be 100% test covered;
+- [x] Write at least some tests that would cover the main functionality of your app. We do not expect to be 100% test covered;
 - [x] Write clean, commented, small and modularized code;
 - [x] Working code, that works if we serve it with the http server and open in a
 browser;
 - [x] README file that contains:
-    - [x]  What is it;
+    - [x] What is it;
     - [x] How does it work;
     - [x] How could we setup and run it;
     - [x] Create a checkbox list of all the features required by this homework and check the ones you were able to accomplish;
